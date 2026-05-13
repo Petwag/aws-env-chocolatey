@@ -66,6 +66,7 @@ jobs:
 
       - name: Push
         shell: pwsh
+
         run: |
           $pkg = Get-ChildItem *.nupkg | Select-Object -First 1
 
@@ -75,4 +76,4 @@ jobs:
 
           choco push $pkg.FullName `
             --source https://push.chocolatey.org/ `
-            --api-key $env:CHOCO_API_KEY
+            --api-key "${{ secrets.CHOCO_API_KEY }}"
