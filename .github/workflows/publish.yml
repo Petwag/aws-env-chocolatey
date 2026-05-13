@@ -43,9 +43,9 @@ jobs:
       - name: Update nuspec version
         shell: pwsh
         run: |
-          (Get-Content mycli.nuspec) `
+          (Get-Content aws-env.nuspec) `
             -replace '<version>.*</version>', "<version>$env:VERSION</version>" `
-            | Set-Content mycli.nuspec
+            | Set-Content aws-env.nuspec
 
       - name: Update install script
         shell: pwsh
