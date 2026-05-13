@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>aws-env</id>
+    <!-- replaced dynamically by workflow -->
+    <version>0.0.0</version>
+    
+    <title>aws-env</title>
+
+    <authors>Petwag</authors>
+    <owners>Petwag</owners>
+
+    <projectUrl>https://github.com/Petwag/aws-env</projectUrl>
+
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+
+    <description>
+      Fetch env from ECS and Lambda and write them to .env
+    </description>
+
+    <tags>cli terminal tool</tags>
+  </metadata>
+</package>

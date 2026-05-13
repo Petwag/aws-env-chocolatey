@@ -1,0 +1,74 @@
+name: Publish Chocolatey Package
+
+on:
+  repository_dispatch:
+    types: [release-published]
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "CLI version"
+        required: true
+
+      checksum:
+        description: "SHA256 checksum"
+        required: true
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $version = "${{ github.event.inputs.version }}"
+            $checksum = "${{ github.event.inputs.checksum }}"
+          }
+          else {
+            $version = "${{ github.event.client_payload.version }}"
+            $checksum = "${{ github.event.client_payload.checksum }}"
+          }
+
+          # remove optional leading "v"
+          $version = $version.TrimStart("v")
+
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+          echo "CHECKSUM=$checksum" >> $env:GITHUB_ENV
+
+      - name: Update nuspec version
+        shell: pwsh
+        run: |
+          (Get-Content mycli.nuspec) `
+            -replace '<version>.*</version>', "<version>$env:VERSION</version>" `
+            | Set-Content mycli.nuspec
+
+      - name: Update install script
+        shell: pwsh
+        run: |
+          (Get-Content tools/chocolateyInstall.ps1) `
+            -replace '\{\{VERSION\}\}', "$env:VERSION" `
+            -replace '\{\{CHECKSUM\}\}', "$env:CHECKSUM" `
+            | Set-Content tools/chocolateyInstall.ps1
+
+      - name: Install Chocolatey
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Pack
+        run: choco pack
+
+      - name: Push
+        shell: pwsh
+        run: |
+          choco push *.nupkg `
+            --source https://push.chocolatey.org/ `
+            --api-key $env:CHOCO_API_KEY
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
