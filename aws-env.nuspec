@@ -22,4 +22,7 @@
 
     <tags>cli terminal tool</tags>
   </metadata>
+  <files>
+    <file src="tools/**" target="tools" />
+  </files>
 </package>
