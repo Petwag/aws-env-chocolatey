@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $packageName = 'aws-env'
 
-$url64 = 'https://github.com/Petwag/aws-env/releases/download/{{VERSION}}/aws-env.exe'
+$url64 = 'https://github.com/Petwag/aws-env/releases/download/v{{VERSION}}/aws-env.exe'
 
 $checksum64 = '{{CHECKSUM}}'
 
